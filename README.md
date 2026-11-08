@@ -1,5 +1,49 @@
-# lab-soc.lab
-Roodmap Cybersécurité
+# Lab SOC personnel : soc.lab
+
+Je suis Patrick Kassi, ingénieur support, réseaux et systèmes, avec plus de 11 ans d'expérience en Afrique de l'Ouest et centrale. Je me forme au métier d'analyste SOC, et ce dépôt est mon carnet de bord.
+
+J'y documente un lab construit de zéro, des attaques que je simule moi-même, la façon dont je les détecte, et les erreurs que je rencontre en chemin. Chaque incident est décrit avec son symptôme, sa cause, la correction et la leçon retenue.
+
+Certifications : CompTIA Security+ (SY0-701), Cisco CCNA (200-301), AWS Cloud Practitioner.
+
+## Architecture du lab
+
+Réseau isolé sous VMware Workstation, découpé en trois zones filtrées par un pare-feu.
+
+| Machine | Système | Zone | Adresse | Rôle |
+|---|---|---|---|---|
+| FW01 | OPNsense 26.7 | toutes | 10.10.x.254 | Pare-feu, routage entre les zones, journalisation |
+| SIEM01 | Ubuntu Server 24.04 | Serveurs | 10.10.10.10 | Wazuh 4.14 (collecte, détection, tableau de bord) |
+| DC01 | Windows Server 2025 | Serveurs | 10.10.10.11 | Contrôleur de domaine soc.lab, DNS |
+| SRV01 | Ubuntu Server 24.04 | Serveurs | 10.10.10.20 | Serveur Linux cible (SSH) |
+| WS01 | Windows 11 Entreprise | Postes | 10.10.20.10 | Poste du domaine, Sysmon et agent Wazuh |
+| KALI01 | Kali Linux | Attaquant | 10.10.99.10 | Simulation d'attaques |
+
+La zone Attaquant n'a aucun accès sortant. Seuls les flux nécessaires à chaque scénario sont ouverts, et toutes les règles concernées sont journalisées.
+
+## Compétences mises en œuvre
+
+- **Réseau et filtrage** : segmentation, règles OPNsense, alias, journaux du pare-feu, analyse de trafic avec Wireshark
+- **SIEM** : déploiement de Wazuh, agents Windows et Linux, lecture et tri des alertes, requêtes DQL
+- **Windows** : Active Directory, journaux de sécurité (4624, 4625, 4688…), Sysmon avec la configuration sysmon-modular
+- **Linux** : auth.log, journald, analyse en ligne de commande (grep, awk, sort, uniq)
+- **Python** : scripts d'analyse de journaux (détection de force brute et de compromission)
+- **Méthode** : MITRE ATT&CK, diagnostic couche par couche, rédaction de rapports d'incident
+
+## Scénarios réalisés
+
+| Date | Scénario | Technique MITRE | Résultat |
+|---|---|---|---|
+| 30/10/2026 | Force brute RDP sur WS01 depuis Kali | T1110.001 | Compromission détectée dans Wazuh (règles 60122, 60204, 92652) |
+| 03/11/2026 | Énumération et force brute SSH sur SRV01 | T1110.001 | Compromission du compte de test détectée dans auth.log et par script Python |
+
+## Contenu du dépôt
+
+- `README.md` : ce journal, séance par séance
+- `scripts/` : mes scripts d'analyse
+
+---
+
 # Journal du lab soc.lab
 
 ## S1 · Mardi 20/10/2026 · Mise en route de FW01 (OPNsense 26.7)
