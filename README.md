@@ -41,3 +41,16 @@ Roodmap Cybersécurité
 
 ### État final
 FW01 opérationnel, interface web accessible depuis https://10.10.10.254, snapshot FW01-base-OK pris.
+
+## Scripts
+
+### analyse_ssh_v3.py
+Script Python qui analyse un fichier auth.log (Ubuntu) et produit :
+- le nombre d'échecs SSH par IP source ;
+- la séparation entre comptes inexistants (énumération) et comptes existants (force brute) ;
+- la liste des connexions réussies, avec une alerte quand une IP qui a échoué finit par se connecter.
+
+Testé dans mon lab soc.lab après une attaque simulée depuis Kali (hydra) : le script a détecté la compromission du compte de test « marie ».
+
+Utilisation : `python3 analyse_ssh_v3.py` (avec auth.log dans le même dossier).
+
